@@ -33,14 +33,12 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    res
-      .status(201)
-      .json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user._id),
-      });
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id),
+    });
   } else {
     res.status(400);
     throw new Error('User could not be created');
@@ -49,12 +47,13 @@ const registerUser = asyncHandler(async (req, res) => {
 
 // @desc - Login a user
 // @route - POST /api/users/login
-// @access -
+// @access - Public
 const loginUser = asyncHandler(async (req, res) => {
   // Get the email and password from the request body
   const { email, password } = req.body;
   // Find the user by email
   const user = await User.findOne({ email });
+
   // if the user exists and the hashed password matches the password in the database
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
@@ -69,6 +68,19 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc - Get current user
+// @route - GET /api/users/me
+// @access - Private
+const getMe = asyncHandler(async (req, res) => {
+  const user = {
+    id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+  };
+  res.status(200).json(user);
+});
+
+// Generate the JWT token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -78,4 +90,5 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   loginUser,
+  getMe,
 };
