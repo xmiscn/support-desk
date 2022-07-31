@@ -24,6 +24,7 @@ app.get('/', (req, res) => {
 // Define the routes for the user API
 // Use the routes defined in userRoutes.js
 app.use('/api/users', require('./routes/userRoutes'));
+// Needs to be the very last middleware
 app.use(errorHandler);
-
+// ... and go ...
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
