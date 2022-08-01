@@ -21,9 +21,10 @@ app.get('/', (req, res) => {
   res.status(201).json({ message: 'Welcome to the Support Desk API' });
 });
 
-// Define the routes for the user API
-// Use the routes defined in userRoutes.js
+// Define the routes for the user and ticket API
+// Use the routes defined in userRoutes.js and ticketRoutes.js
 app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/tickets', require('./routes/ticketRoutes'));
 // Needs to be the very last middleware
 app.use(errorHandler);
 // ... and go ...

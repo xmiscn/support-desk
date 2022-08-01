@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 const registerUser = asyncHandler(async (req, res) => {
   //destructure the req.body for some validation
   const { name, email, password } = req.body;
-
+  console.log('Starting to register user');
   //validate the req.body
   if (!name || !email || !password) {
     res.status(400);
