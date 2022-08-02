@@ -237,19 +237,19 @@ h3 {
   text-align: center;
 }
 
-.status-new {
+.status-New {
   background-color: green;
   color: #fff;
   border-radius: 10px;
 }
 
-.status-open {
+.status-Open {
   background-color: steelblue;
   color: #fff;
   border-radius: 10px;
 }
 
-.status-closed {
+.status-Closed {
   background-color: darkred;
   color: #fff;
   border-radius: 10px;
@@ -333,19 +333,19 @@ h3 {
   transform: scale(0.98);
 }
 
-p.status-in-progress {
+p.status-In-progress {
   color: orangered;
 }
 
-p.status-waiting {
+p.status-Waiting {
   color: red;
 }
 
-p.status-ready {
+p.status-Ready {
   color: steelblue;
 }
 
-p.status-complete {
+p.status-Complete {
   color: green;
 }
 
