@@ -2,6 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 const { protectRoute } = require('../middleware/authMiddleware');
+
+// Needed because format of Notes URL will look like
+// /api/ticket/:ticketId/notes
+// Re-Route into Notes Router
+const noteRouter = require('./noteRoutes');
+router.use('/:ticketId/notes', noteRouter);
+
 const {
   getTicket,
   getTickets,
