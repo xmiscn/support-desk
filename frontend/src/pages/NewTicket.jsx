@@ -8,9 +8,6 @@ import BackButton from '../components/BackButton';
 
 function NewTicket() {
   const { user } = useSelector((state) => state.auth);
-  const { isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.tickets
-  );
 
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
@@ -22,23 +19,15 @@ function NewTicket() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    dispatch(createTicket({ product, description }));
+    dispatch(createTicket({ product, description }))
+      .unwrap()
+      .then(() => {
+        // We got a good response so navigate the user
+        navigate('/tickets');
+        toast.success('New ticket created!');
+      })
+      .catch(toast.error);
   };
-
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
-    if (isSuccess) {
-      dispatch(resetTicket());
-      navigate('/tickets');
-    }
-    dispatch(resetTicket());
-  }, [isError, isSuccess, message, navigate, dispatch]);
-
-  if (isLoading) {
-    <Spinner />;
-  }
 
   return (
     <>

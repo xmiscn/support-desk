@@ -16,19 +16,7 @@ function Login() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isLoading, isSuccess, isError, message } = useSelector(
-    (state) => state.auth
-  );
-
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
-    if (isSuccess && user) {
-      navigate('/');
-    }
-    dispatch(reset());
-  }, [isError, isSuccess, user, message, navigate, dispatch]);
+  const { isLoading } = useSelector((state) => state.auth);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -39,8 +27,22 @@ function Login() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    const userData = { email, password };
-    dispatch(login(userData));
+
+    const userData = {
+      email,
+      password,
+    };
+
+    dispatch(login(userData))
+      .unwrap()
+      .then((user) => {
+        // NOTE: by unwrapping the AsyncThunkAction we can navigate the user after
+        // getting a good response from our API or catch the AsyncThunkAction
+        // rejection to show an error message
+        toast.success(`Logged in as ${user.name}`);
+        navigate('/');
+      })
+      .catch(toast.error);
   };
 
   if (isLoading) {

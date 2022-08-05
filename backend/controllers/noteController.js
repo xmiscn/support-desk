@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler');
 const Ticket = require('../models/ticketModel');
-const User = require('../models/userModel');
 const Note = require('../models/notesModel');
 
 // @desc - Get notes for a ticket
@@ -8,13 +7,6 @@ const Note = require('../models/notesModel');
 // @access - Private
 
 const getNotes = asyncHandler(async (req, res) => {
-  // Get the user from the token
-  const user = await User.findById(req.user.id);
-  if (!user) {
-    res.status(401);
-    throw new Error('User not found.');
-  }
-
   const ticket = await Ticket.findById(req.params.ticketId);
 
   if (ticket.user.toString() !== req.user.id) {
@@ -23,7 +15,6 @@ const getNotes = asyncHandler(async (req, res) => {
   }
 
   const notes = await Note.find({ ticket: req.params.ticketId });
-
   res.status(200).json(notes);
 });
 
@@ -32,13 +23,6 @@ const getNotes = asyncHandler(async (req, res) => {
 // @access - Private
 
 const addNote = asyncHandler(async (req, res) => {
-  // Get the user from the token
-  const user = await User.findById(req.user.id);
-  if (!user) {
-    res.status(401);
-    throw new Error('User not found.');
-  }
-
   const ticket = await Ticket.findById(req.params.ticketId);
 
   if (ticket.user.toString() !== req.user.id) {

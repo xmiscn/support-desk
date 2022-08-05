@@ -1,29 +1,19 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTickets, resetTicket } from '../features/tickets/ticketSlice';
+import { getTickets } from '../features/tickets/ticketSlice';
 import Spinner from '../components/Spinner';
 import BackButton from '../components/BackButton';
 import TicketItem from '../components/TicketItem';
 
 function Tickets() {
   const dispatch = useDispatch();
-  const { tickets, isLoading, isSuccess } = useSelector(
-    (state) => state.tickets
-  );
-
-  useEffect(() => {
-    return () => {
-      if (isSuccess) {
-        dispatch(resetTicket());
-      }
-    };
-  }, [dispatch, isSuccess]);
+  const { tickets } = useSelector((state) => state.tickets);
 
   useEffect(() => {
     dispatch(getTickets());
   }, [dispatch]);
 
-  if (isLoading) {
+  if (!tickets) {
     <Spinner />;
   }
 

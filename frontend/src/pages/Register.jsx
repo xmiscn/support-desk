@@ -19,19 +19,7 @@ function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user, isLoading, isSuccess, isError, message } = useSelector(
-    (state) => state.auth
-  );
-
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
-    if (isSuccess && user) {
-      navigate('/');
-    }
-    dispatch(reset());
-  }, [isError, isSuccess, user, message, navigate, dispatch]);
+  const { isLoading } = useSelector((state) => state.auth);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -40,13 +28,34 @@ function Register() {
     }));
   };
 
+  // NOTE: no need for useEffect here as we can catch the
+  // AsyncThunkAction rejection in our onSubmit or redirect them on the
+  // resolution
+  // Side effects shoulld go in event handlers where possible
+  // source: - https://beta.reactjs.org/learn/keeping-components-pure#where-you-can-cause-side-effects
+
   const onSubmit = (e) => {
     e.preventDefault();
+
     if (password !== password2) {
       toast.error('Passwords do not match');
     } else {
-      const userData = { name, email, password };
-      dispatch(register(userData));
+      const userData = {
+        name,
+        email,
+        password,
+      };
+
+      dispatch(register(userData))
+        .unwrap()
+        .then((user) => {
+          // NOTE: by unwrapping the AsyncThunkAction we can navigate the user after
+          // getting a good response from our API or catch the AsyncThunkAction
+          // rejection to show an error message
+          toast.success(`Registered new user - ${user.name}`);
+          navigate('/');
+        })
+        .catch(toast.error);
     }
   };
 

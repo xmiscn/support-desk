@@ -1,21 +1,12 @@
 const asyncHandler = require('express-async-handler');
 const Ticket = require('../models/ticketModel');
-const User = require('../models/userModel');
 
 // @desc - Get all tickets of a user
 // @route - GET /api/tickets
 // @access - Private
 
 const getTickets = asyncHandler(async (req, res) => {
-  // Get the user from the token
-  const user = await User.findById(req.user.id);
-  if (!user) {
-    res.status(401);
-    throw new Error('User not found');
-  }
-
-  const tickets = await Ticket.find({ user: user._id });
-
+  const tickets = await Ticket.find({ user: req.user.id });
   res.status(200).json(tickets);
 });
 
@@ -24,13 +15,6 @@ const getTickets = asyncHandler(async (req, res) => {
 // @access - Private
 
 const getTicket = asyncHandler(async (req, res) => {
-  // Get the user from the token
-  const user = await User.findById(req.user.id);
-  if (!user) {
-    res.status(401);
-    throw new Error('User not found');
-  }
-
   const ticket = await Ticket.findById({
     _id: req.params.id,
     user: req.user.id,
@@ -58,11 +42,7 @@ const createTicket = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error('Please provide a product and a description');
   }
-  const user = await User.findById(req.user.id);
-  if (!user) {
-    res.status(401);
-    throw new Error('User not found');
-  }
+
   const ticket = await Ticket.create({
     user: req.user.id,
     product,
@@ -78,11 +58,6 @@ const createTicket = asyncHandler(async (req, res) => {
 // @access - Private
 
 const deleteTicket = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id);
-  if (!user) {
-    res.status(401);
-    throw new Error('User not found');
-  }
   const ticket = await Ticket.findById({
     _id: req.params.id,
     user: req.user.id,
@@ -106,13 +81,6 @@ const deleteTicket = asyncHandler(async (req, res) => {
 // @access - Private
 
 const updateTicket = asyncHandler(async (req, res) => {
-  // Get the user from the token
-  const user = await User.findById(req.user.id);
-  if (!user) {
-    res.status(401);
-    throw new Error('User not found');
-  }
-
   const ticket = await Ticket.findById({
     _id: req.params.id,
     user: req.user.id,
